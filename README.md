@@ -4,15 +4,11 @@ Portable dev kit. Clone it on any machine and feel at home.
 
 **Platform:** macOS · Linux
 
----
-
 ## Modules
 
 | Module | Description |
 |--------|-------------|
 | [`agent/`](agent/) | Multi-agent Claude Code workflow — Gemini (research) + Codex (review) |
-
----
 
 ## Prerequisites
 
@@ -49,9 +45,13 @@ Set `GEMINI_API_KEY` in your shell profile. Free tier available at [aistudio.goo
 npm install -g @openai/codex
 ```
 
-Set `OPENAI_API_KEY` in your shell profile. [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+Then store your API key with:
 
----
+```bash
+echo "sk-proj-..." | codex login --with-api-key
+```
+
+Get a key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). Storing via `codex login` keeps the key out of your shell profile.
 
 ## Setup
 
