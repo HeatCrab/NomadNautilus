@@ -1,0 +1,37 @@
+# === Multi-Agent Workflow (auto-installed) ===
+
+## Research and Web Search
+
+For web search, current documentation, or any information that may be outdated, **strongly prefer Gemini CLI** over built-in search tools. Use built-in WebSearch only if Gemini CLI is unavailable (not installed, auth failure, etc.).
+
+Invoke via the `/gemini-research` skill. Pass a specific, factual query — not open-ended questions. Gemini must return source URLs; if the output has no sources, re-query with a stricter prompt or fall back to built-in WebSearch.
+
+## Git Operations
+
+Always resolve the repo root first, then use `git -C <absolute-path>` for all git commands:
+
+```bash
+ROOT=$(git rev-parse --show-toplevel)
+git -C "$ROOT" commit -m "..."
+```
+
+If `git rev-parse --show-toplevel` fails, the session CWD is not inside a git repo. Find the correct repo first:
+
+```bash
+ls -d */  | xargs -I{} sh -c 'git -C {} rev-parse --show-toplevel 2>/dev/null && echo {}'
+```
+
+Never run `git add` or `git commit` until the correct repo root is confirmed.
+
+## Code Review
+
+Before any `git commit`, run `/codex-review` on the staged changes, present the review to the user, and wait for explicit confirmation before committing. Even if the user originally requested the commit, that is not a blank approval — they may want to fix issues first.
+
+If the user says to fix issues first — fix, re-stage, then repeat the review flow.
+
+When evaluating Codex findings:
+- Prioritize design-level feedback over syntax/style.
+- "Do the right thing, rather than do things right."
+- You are not obligated to accept all findings, but you must present them to the user.
+
+Use `/codex-review` for on-demand review outside of the commit flow (e.g. before executing a plan).
