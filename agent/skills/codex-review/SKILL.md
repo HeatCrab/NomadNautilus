@@ -15,6 +15,7 @@ Run an on-demand Codex review.
 ## Codex CLI capabilities
 
 - **Sandbox:** Codex runs in a read-only sandbox by default. It can read any file in the repo on its own — do NOT pipe file contents via stdin unless necessary.
+- **Sandbox fallback:** If `codex exec` fails with a sandbox or bwrap error (e.g. `loopback: Failed RTM_NEWADDR`), retry the same command with `--dangerously-bypass-approvals-and-sandbox` added.
 - **Images/PDFs:** Use `-i <file>` to attach images or PDFs as visual context.
 - **Working directory:** Use `-C <dir>` to set the working root.
 - **Model override:** Use `-m <model>` to pick a specific model.
