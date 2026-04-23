@@ -57,14 +57,41 @@ else
   info "CLAUDE.md rules appended → $CLAUDE_MD"
 fi
 
-# 5. API key instructions
+# 5. Configure Gemini model (gemini-3-pro-preview via nested object form)
+mkdir -p "$HOME/.gemini"
+GEMINI_SETTINGS="$HOME/.gemini/settings.json"
+MODEL_RESULT=$(python3 -c "
+import json, os
+path = '$GEMINI_SETTINGS'
+cfg = {}
+if os.path.exists(path):
+    with open(path) as f:
+        cfg = json.load(f)
+if not isinstance(cfg.get('model'), dict) or cfg['model'].get('name') != 'gemini-3-pro-preview':
+    cfg['model'] = {'name': 'gemini-3-pro-preview'}
+    with open(path, 'w') as f:
+        json.dump(cfg, f, indent=2)
+    print('updated')
+else:
+    print('skip')
+")
+if [ "$MODEL_RESULT" = "updated" ]; then
+  info "Gemini model set to gemini-3-pro-preview → $GEMINI_SETTINGS"
+else
+  warn "Gemini model already configured — skipping"
+fi
+
+# 6. Auth and API key instructions
 echo ""
-echo "=== API Keys Required ==="
+echo "=== Auth Required ==="
 echo ""
-echo "Gemini — add to your ~/.bashrc or ~/.zshrc:"
-echo "  export GEMINI_API_KEY=<your key>"
-echo "  → Get free key: https://aistudio.google.com/apikey"
-echo "  Then reload: source ~/.bashrc"
+echo "Gemini — OAuth (recommended, uses Gemini Pro subscription quota):"
+echo "  gemini auth login"
+echo "  (Opens browser for Google sign-in. Run from a terminal with display,"
+echo "   or copy the printed URL to a local browser if on a remote server.)"
+echo ""
+echo "  Fallback (free tier, 20 req/day limit):"
+echo "  export GEMINI_API_KEY=<your key>  # aistudio.google.com/apikey"
 echo ""
 echo "Codex — store via codex login (keeps key out of shell profile):"
 echo "  echo \"sk-proj-...\" | codex login --with-api-key"
