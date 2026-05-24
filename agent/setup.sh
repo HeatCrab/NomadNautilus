@@ -39,13 +39,12 @@ if [ ${#MISSING[@]} -gt 0 ]; then
   echo ""
 fi
 
-# 2. Create ~/.claude directories
-mkdir -p "$SKILLS_DIR/gemini-research"
-mkdir -p "$SKILLS_DIR/codex-review"
-
-# 3. Copy skill files
-cp "$SCRIPT_DIR/skills/gemini-research/SKILL.md" "$SKILLS_DIR/gemini-research/SKILL.md"
-cp "$SCRIPT_DIR/skills/codex-review/SKILL.md"    "$SKILLS_DIR/codex-review/SKILL.md"
+# 2. Install all skills (discover every SKILL.md under skills/)
+for skill_dir in "$SCRIPT_DIR"/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  mkdir -p "$SKILLS_DIR/$skill_name"
+  cp "$skill_dir/SKILL.md" "$SKILLS_DIR/$skill_name/SKILL.md"
+done
 info "Skills installed → $SKILLS_DIR"
 
 # 4. Append CLAUDE.md snippet (idempotent)
