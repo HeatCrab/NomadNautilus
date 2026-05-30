@@ -15,6 +15,15 @@ Style rules for long-form technical writing. Apply from the first draft so the u
 
 Not for: short index / memo files, source-code comments (always English, separate rule), tool-output relays.
 
+## Deliverable type drives formality
+
+Ask (or infer) up front whether the report is a personal note, a course submission, or destined for LaTeX / PDF. The register and typography rules below all hold, but figure formality scales with the target:
+
+- **Self-use note**: figures stay inline with the narrative — English alt text, and the surrounding paragraph acts as the de-facto caption. No figure numbers, no `Figure N` caption lines.
+- **Submission / LaTeX conversion**: numbered `Figure N` captions, caption labels, and renumber-on-relocation apply.
+
+When the target is unclear, ask before adding or stripping figure numbering.
+
 ## Language
 
 - **Default to Traditional Chinese (zh-TW)** for any long-form prose the user will read and adjust. The user finds it much easier to review and edit prose in Chinese, even when the final published form is English.
@@ -26,19 +35,20 @@ Not for: short index / memo files, source-code comments (always English, separat
 
 - **Reflective first-person is the default register.** "I expected X, then I found Y, so I decided Z." The report's value (vs the demo) is the process and reflection — partly a reflective essay, not a pure technical write-up.
 - Switch to academic third-person / passive only for displaying facts: addresses, register layouts, polarity, hardware behaviour.
+- **Decision narratives are welcome, not noise.** When a non-obvious choice was made (which dataset source, why this metric, why this threshold), write the short story of arriving at it — the option first reached for, why it fell short, what was chosen instead. A paragraph tracing "tried the obvious source, hit a gating / credibility problem, found a better-grounded alternative" is exactly the reflective value the report carries over a demo. Do not compress these into a single declarative result sentence.
 - **Preserve the hand-written feel.** Intentional prose imperfections — sparing em-dashes, slightly awkward phrasings, clause-joining punctuation choices, first-person reflective asides — are voice markers, not errors. Flag a style issue at most once; never re-push after the user says "leave it."
 
 ## Structure
 
 - **Paragraph prose is the default.** Narrative flow, not point form.
 - **Bullets only for real enumerations** — parallel items that stand alone (operator / parameter lists, baseline lists, metric lists). Process narratives ("first ..., then ..., finally ...") stay as prose.
-- **Bullet sandwich** for technical spec sections: short prose opening (context) → bullet middle (operator / hyperparam spec) → prose closing (mechanism, rationale). Aim for roughly 0–15 % of report length in bullets total; beyond that the document becomes a slide deck.
+- **Bullets are situational, not owed to any section.** A spec section that flows naturally as prose stays prose (the Setup of a report can list model / resolution / token math entirely in sentences). Only when a spec section actually contains a clean enumeration is the **bullet sandwich** the right pattern: short prose opening (context) → bullet middle (operator / hyperparam spec) → prose closing (mechanism, rationale). Aim for roughly 0–15 % of report length in bullets total; beyond that the document becomes a slide deck.
 - **"Less than N pages" is a hard upper bound, not a target.** Aim tight and well within. Padding to hit N looks bad; undershooting by more than ~30 % looks unfinished.
 - **Results vs Observations split** when the report uses a Methods / Results / Observations (or Results / Discussion) structure. Do not dump all figures and tables at the end of Results.
   - Results keeps the hard numbers (metric / reference tables, each right after the sentence that announces it).
   - Observations holds the figures, each beside the paragraph that interprets it. Figures are analytical; they belong with the discussion.
   - De-duplicate prose between the two: Results states raw facts; Observations interprets without re-citing the same raw counts. Keep only load-bearing numbers (ones that appear *only* in Observations) in the discussion.
-  - Renumber figures so figure-number = reading order after relocation. Grep in-text figure references first to confirm low risk.
+  - Renumber figures so figure-number = reading order after relocation (submission / LaTeX targets only — see Deliverable type). Grep in-text figure references first to confirm low risk.
 
 ## Typography
 
@@ -54,9 +64,10 @@ Not for: short index / memo files, source-code comments (always English, separat
   - Parameter assignments (`pop = 50`, `n_clusters = 2`)
   - Literal values (`0xFFFF`, `'lbfgs'`)
   - Protocol / fixed-phrase keywords (`train = test`, `train = test resubstitution`)
+  - Verbatim label strings drawn from a dataset — values that appear unchanged in code, filenames, or metadata (class labels like `biking through snow`, `golf driving`). Decision: would this exact string appear in a file path or a config? Then backtick, even though the dataset *name* itself is italic.
 - **Italic** (`*…*`) for:
   - Feature / attribute names treated as field references (`*Age*`, `*Polyuria*`)
-  - Dataset names, paper titles, section refs (`*Part I*`, `*Part II*`, `*Part I/II*`)
+  - Dataset / corpus names, paper titles, section refs (`*Kinetics-400*`, `*Part I*`, `*Part II*`, `*Part I/II*`)
   - Domain-specific terms on first introduction
   - Instance names that need to stand out from prose (`*ARMv8_0*`, `*UART_2*`, `*nIRQ_0*`)
 - **LaTeX math** (`$…$` / `$$…$$`) for:
@@ -76,24 +87,28 @@ Pandoc + xelatex renders `` ` `` to `\texttt{}` and `$…$` to math mode cleanly
 
 ## Punctuation
 
+### Overall budget — the unifying principle
+
+Comma (，/,) and period (。/.) are the default marks. Every other mark — colon, em-dash, semicolon, 頓號 (、), parentheses — is a special-purpose tool, not default punctuation. Across a whole document these non-default marks combined should stay a small minority, roughly **under 15 % of all punctuation**. This is simply how a student outside a literature / creative-writing discipline writes; reaching for these marks by default reads as affected. Every per-mark rule below is one instance of this single budget — when in doubt, recast with a comma or period.
+
 ### No colon-subtitle pattern
 - Headings: never `Title: explanation`. Use a real heading line or run as prose.
 - **Applies to git commit subjects too.** One plain sentence, no colon-subtitle, even if older commits in the repo used that pattern.
 
 ### Prose elaboration colon
-**Test: keep the colon when its right side is a *list of things*; remove it when its right side is a *sentence*.** Applies in both English and zh-TW drafts.
+**Test: keep the colon only when its right side is a *list of things*, and even then it is optional; remove it when its right side is a *sentence*.** Applies in both English and zh-TW drafts. A list, table, figure, or display equation reads fine after a full sentence ending in a period — the "…如下。" + new-line pattern is the preferred default. Reach for a lead-in colon only when the sentence genuinely feels unfinished without it.
 
-- **Keep**: introducing a bullet list, display equation, code block, or table ("set as follows:", "fitness is defined as:"); figure / table caption labels ("Table 3.1:", "Figure 3.1:"); bullet-item labels ("**Majority-class baseline**: always predicts Positive ..."). These are structural "a list follows" signals; they read worse without the colon.
+- **Keep** (the few genuinely-needed cases): figure / table caption labels ("Table 3.1:", "Figure 3.1:") and bullet-item labels ("**Majority-class baseline**: always predicts Positive ..."). A lead-in to a list / equation / code block / table *may* keep the colon ("fitness is defined as:") but does not need it — prefer the period form above unless the colon clearly reads better.
 - **Remove** → period (split into two sentences) or comma (let the clause flow): complete claim or noun where the right side is more prose. "The gap is reasonable: this assignment uses ..." → "The gap is reasonable. This assignment uses ..." A claim-then-evidence colon almost always wants a period. Noun-definition colons ("Protocol: the full ...") are not automatically safe either — a comma usually works.
 
 ### Em-dashes (—)
-Sparingly. Default to periods, commas, semicolons. Em-dash is fine for occasional inline pauses or titles, not as default punctuation.
+Sparingly (part of the under-15 % budget). Default to periods and commas. Em-dash is fine for occasional inline pauses or titles, not as default punctuation.
 
 ### Semicolons (；in zh-TW, ; in English)
-Almost never in flowing exposition. Legitimate only when separating parallel list items that themselves contain internal commas. Two independent clauses joined by a semicolon should become two sentences. Parallel structures ("GA ..., ...; PSO ..., ...") handle just as well with a period.
+Almost never in flowing exposition — the single most over-reached mark for students, and a prime target of the budget. Legitimate only when separating parallel list items that themselves contain internal commas. Two independent clauses joined by a semicolon should become two sentences. Parallel structures ("GA ..., ...; PSO ..., ...") handle just as well with a period.
 
 ### Enumeration comma 頓號 (、) — zh-TW only
-For words / short phrases, not clauses. Use 、 between parallel nouns (e.g. listing categorical values, metric pairs). When 、 sits between two full clauses it should be a comma (，). **Caveat:** the user uses 、 as a voice marker; convert only genuine clause-joins, and only on an explicit punctuation pass — never as unsolicited smoothing.
+For words / short phrases, not clauses, and still inside the budget — do not sprinkle 、 just because a sentence lists several nouns; a few well-placed ones are enough. Use 、 between parallel nouns (e.g. listing categorical values, metric pairs). When 、 sits between two full clauses it should be a comma (，). **Caveat:** the user uses 、 as a voice marker; convert only genuine clause-joins, and only on an explicit punctuation pass — never as unsolicited smoothing.
 
 ### Brackets / parentheses — three categories
 Discern with two questions: "does the main clause stand without the bracket?" and "is the bracket carrying essential spec content?"
