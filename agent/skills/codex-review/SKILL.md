@@ -5,10 +5,12 @@ description: Trigger an on-demand Codex CLI design review. Use before executing 
 
 Run an on-demand Codex review.
 
+Syntax below matches codex CLI >= 0.142 (breaking changes vs 0.118: `--title` now requires `--commit`; scope flags no longer accept a custom prompt; `--full-auto` removed from `codex exec`).
+
 ## When to use
 
 - Before executing a significant plan
-- Before committing (review staged changes)
+- Before committing (review uncommitted changes)
 - Mid-session when Claude judges a design review is warranted
 - Invoked manually with `/codex-review`
 
@@ -22,23 +24,17 @@ Run an on-demand Codex review.
 
 ## Review patterns
 
-### Review staged changes (pre-commit)
+### Review uncommitted changes (pre-commit — default scope)
+
+The bare form reviews ALL uncommitted changes: staged + unstaged + untracked. It is also the only form that accepts custom instructions:
 
 ```bash
-!codex review --title "short description of changes"
+!codex review "Context: <what changed and why>. Focus on correctness of the algorithm implementation and edge cases."
 ```
 
-Or with custom focus:
+There is no staged-only scope. If unstaged noise would pollute the review, scope it in the instructions ("only comment on changes to X") or stash the noise first.
 
-```bash
-!codex review "Focus on correctness of the algorithm implementation and edge cases"
-```
-
-### Review uncommitted changes (staged + unstaged + untracked)
-
-```bash
-!codex review --uncommitted
-```
+`codex review --uncommitted` reviews the same scope but cannot take instructions.
 
 ### Review changes against a base branch
 
@@ -49,8 +45,10 @@ Or with custom focus:
 ### Review a specific commit
 
 ```bash
-!codex review --commit <SHA>
+!codex review --commit <SHA> --title "short description of changes"
 ```
+
+Note: scope flags (`--uncommitted`, `--base`, `--commit`) can NOT be combined with a custom prompt, and `--title` is only valid together with `--commit`.
 
 ### Review arbitrary files with context (e.g., assignment spec)
 
