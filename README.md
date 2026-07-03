@@ -8,7 +8,7 @@ Portable dev kit. Clone it on any machine and feel at home.
 
 | Module | Description |
 |--------|-------------|
-| [`agent/`](agent/) | Multi-agent Claude Code workflow — Gemini (research) + Codex (review) |
+| [`agent/`](agent/) | Multi-agent Claude Code workflow — Codex (review) |
 
 ## Prerequisites
 
@@ -30,22 +30,6 @@ cargo install rtk
 
 > RTK rewrites common CLI commands (git, npm, etc.) to strip noise before it reaches Claude's context. 60–90% token savings on dev operations.  
 > Repo: [rtk-ai/rtk](https://github.com/rtk-ai/rtk)
-
-### Gemini CLI
-
-```bash
-npm install -g @google/gemini-cli
-```
-
-After installing, authenticate with your Google account (uses Gemini Pro subscription quota — no daily request cap):
-
-```bash
-gemini auth login
-```
-
-On a remote server without a browser, the CLI prints a URL — open it on your local machine and paste the code back. `setup.sh` configures the model automatically.
-
-Fallback: set `GEMINI_API_KEY` in your shell profile for free-tier access (20 req/day limit). Get a key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
 
 ### Codex CLI
 

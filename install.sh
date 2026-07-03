@@ -35,7 +35,6 @@ else
 fi
 
 check npm    "https://nodejs.org  or  nvm: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh | bash"
-check gemini "npm install -g @google/gemini-cli"
 check codex  "npm install -g @openai/codex"
 
 echo ""

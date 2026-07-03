@@ -20,22 +20,12 @@ echo "=== Claude Code Multi-Agent Workflow Installer ==="
 echo ""
 
 # 1. Check prerequisites
-MISSING=()
-for cmd in codex gemini; do
-  command -v "$cmd" &>/dev/null || MISSING+=("$cmd")
-done
-
-if [ ${#MISSING[@]} -gt 0 ]; then
-  warn "Missing CLIs: ${MISSING[*]}"
+if ! command -v codex &>/dev/null; then
+  warn "Missing CLI: codex"
   echo "  Install with npm (no root required):"
-  for cmd in "${MISSING[@]}"; do
-    case "$cmd" in
-      gemini) echo "    npm install -g @google/gemini-cli" ;;
-      codex)  echo "    npm install -g @openai/codex" ;;
-    esac
-  done
+  echo "    npm install -g @openai/codex"
   echo ""
-  warn "Continuing — install missing CLIs before first use."
+  warn "Continuing — install codex before first use."
   echo ""
 fi
 
@@ -56,41 +46,9 @@ else
   info "CLAUDE.md rules appended → $CLAUDE_MD"
 fi
 
-# 5. Configure Gemini model (gemini-3-pro-preview via nested object form)
-mkdir -p "$HOME/.gemini"
-GEMINI_SETTINGS="$HOME/.gemini/settings.json"
-MODEL_RESULT=$(python3 -c "
-import json, os
-path = '$GEMINI_SETTINGS'
-cfg = {}
-if os.path.exists(path):
-    with open(path) as f:
-        cfg = json.load(f)
-if not isinstance(cfg.get('model'), dict) or cfg['model'].get('name') != 'gemini-3-pro-preview':
-    cfg['model'] = {'name': 'gemini-3-pro-preview'}
-    with open(path, 'w') as f:
-        json.dump(cfg, f, indent=2)
-    print('updated')
-else:
-    print('skip')
-")
-if [ "$MODEL_RESULT" = "updated" ]; then
-  info "Gemini model set to gemini-3-pro-preview → $GEMINI_SETTINGS"
-else
-  warn "Gemini model already configured — skipping"
-fi
-
-# 6. Auth and API key instructions
+# 5. Auth and API key instructions
 echo ""
 echo "=== Auth Required ==="
-echo ""
-echo "Gemini — OAuth (recommended, uses Gemini Pro subscription quota):"
-echo "  gemini auth login"
-echo "  (Opens browser for Google sign-in. Run from a terminal with display,"
-echo "   or copy the printed URL to a local browser if on a remote server.)"
-echo ""
-echo "  Fallback (free tier, 20 req/day limit):"
-echo "  export GEMINI_API_KEY=<your key>  # aistudio.google.com/apikey"
 echo ""
 echo "Codex — store via codex login (keeps key out of shell profile):"
 echo "  echo \"sk-proj-...\" | codex login --with-api-key"
