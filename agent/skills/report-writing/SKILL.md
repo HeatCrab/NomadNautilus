@@ -1,14 +1,24 @@
 ---
 name: report-writing
-description: Writing-style rules for technical / coursework reports — reflective first-person prose, zh-TW drafting default, typography conventions (code / italic / math), punctuation policy, Results vs Observations layout. Invoke when drafting, editing, reviewing, restructuring, or translating a report deliverable (Report.md, design notes, long-form prose).
+description: Writing rules for human-read documents. Universal tier for ANY prose document — punctuation discipline (comma/period only; 頓號 or bullets for enumerations; full-width marks in zh-TW). Full tier for reports/notes — reflective first-person process narrative, zh-TW drafting default, typography (code / italic / math), Results vs Observations layout. Invoke before writing or editing any prose document except memory and CLAUDE.md-type instruction files.
 ---
 
-Style rules for long-form technical writing. Apply from the first draft so the user does not have to correct each issue manually.
+Style rules for human-read prose. Apply from the first draft so the user does not have to correct each issue manually.
 
-## When to use
+## Two tiers
 
-- Drafting a new report (course assignment, design note, README long-form prose)
-- Editing or restructuring an existing report draft
+**Universal — every human-read document** (README, resume, docs, anything that is not a Claude-self-use file):
+
+- Punctuation: comma (，/,) and period (。/.) are the only default marks. Enumerations may use 頓號 (、, zh-TW) or a bullet list. Colons, semicolons, dashes, parentheses — only where a full-tier rule below explicitly allows them.
+- zh-TW prose uses full-width punctuation throughout.
+- Target language: when not obvious from the document itself, ask the user before drafting.
+
+**Full tier — reports and notes**, where process and reflection are the point. All sections below apply on top of the universal tier.
+
+## When to use the full tier
+
+- Drafting a new report or note (course assignment, design note, study notes)
+- Editing or restructuring an existing draft
 - Doing a typography / punctuation pass
 - Preparing a draft for codex review
 - Translating a zh-TW draft to English for submission
@@ -29,7 +39,8 @@ When the target is unclear, ask before adding or stripping figure numbering.
 - **Default to Traditional Chinese (zh-TW)** for any long-form prose the user will read and adjust. The user finds it much easier to review and edit prose in Chinese, even when the final published form is English.
 - Switch to English only when the user explicitly says so at the start of the task (e.g. "write in English", "PLAN in English").
 - **Translation is faithful, not a rewrite.** Translate the agreed zh-TW one-to-one; preserve meaning, sentence order, and voice. Do not over-polish into generic fluent English, do not restructure paragraphs, do not touch layout (tables, figures, headings, code blocks, citation markers stay placed as is). The English version is a render of the Chinese, not an improved version.
-- **Codex review happens on the zh-TW version, before translation.** Order: zh-TW draft → user reviews → codex review on zh-TW → translate → translation frozen, no further content edits → pandoc → PDF → submit. Reviewing after translation would force re-translating every adjustment.
+- **Codex review happens on the zh-TW version, before translation.** Order: zh-TW draft → user reviews → codex review on zh-TW → translate → translation frozen → pandoc → PDF → submit. Reviewing after translation would force re-translating every adjustment.
+- **Post-freeze content fixes go directly into the English version.** If a factual error surfaces after translation, edit the English text in place — do not re-translate, and accept that the zh-TW draft goes stale from that point.
 
 ## Voice
 
@@ -85,15 +96,16 @@ Pandoc + xelatex renders `` ` `` to `\texttt{}` and `$…$` to math mode cleanly
 - `×` in dimensions (`520 × 17`) stays Unicode for the same reason.
 - Image alt text (`![alt](path)`) stays plain — markdown renderers (and pandoc) do not process markdown formatting inside alt text. Italicize in the caption underneath, not in the alt.
 
-## Punctuation
+## Punctuation (full-tier refinements)
+
+These refine the universal punctuation rule for reports, where a few extra marks earn their place.
 
 ### Overall budget — the unifying principle
 
 Comma (，/,) and period (。/.) are the default marks. Every other mark — colon, em-dash, semicolon, 頓號 (、), parentheses — is a special-purpose tool, not default punctuation. Across a whole document these non-default marks combined should stay a small minority, roughly **under 15 % of all punctuation**. This is simply how a student outside a literature / creative-writing discipline writes; reaching for these marks by default reads as affected. Every per-mark rule below is one instance of this single budget — when in doubt, recast with a comma or period.
 
 ### No colon-subtitle pattern
-- Headings: never `Title: explanation`. Use a real heading line or run as prose.
-- **Applies to git commit subjects too.** One plain sentence, no colon-subtitle, even if older commits in the repo used that pattern.
+Headings: never `Title: explanation`. Use a real heading line or run as prose.
 
 ### Prose elaboration colon
 **Test: keep the colon only when its right side is a *list of things*, and even then it is optional; remove it when its right side is a *sentence*.** Applies in both English and zh-TW drafts. A list, table, figure, or display equation reads fine after a full sentence ending in a period — the "…如下。" + new-line pattern is the preferred default. Reach for a lead-in colon only when the sentence genuinely feels unfinished without it.
@@ -131,5 +143,4 @@ When sending a report draft to codex review:
 
 ## See also
 
-- `gemini-research` — current docs / web search
 - `codex-review` — design review for code (separate from report review)
