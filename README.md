@@ -34,8 +34,10 @@ cargo install rtk
 ### Codex CLI
 
 ```bash
-npm install -g @openai/codex
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
 ```
+
+The official standalone installer — installs to `~/.local/bin/codex`. To upgrade, rerun the same command. (npm's `@openai/codex` also works but is no longer the recommended channel; an npm-shipped binary was once flagged by macOS Gatekeeper.)
 
 Then store your API key with:
 

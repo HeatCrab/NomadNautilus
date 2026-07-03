@@ -22,8 +22,8 @@ echo ""
 # 1. Check prerequisites
 if ! command -v codex &>/dev/null; then
   warn "Missing CLI: codex"
-  echo "  Install with npm (no root required):"
-  echo "    npm install -g @openai/codex"
+  echo "  Install with the official standalone installer (no root required):"
+  echo "    curl -fsSL https://chatgpt.com/codex/install.sh | sh"
   echo ""
   warn "Continuing — install codex before first use."
   echo ""

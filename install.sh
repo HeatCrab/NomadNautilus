@@ -34,8 +34,7 @@ else
   check rtk    "cargo install rtk   (need cargo? → curl -fsSL https://sh.rustup.rs | sh)"
 fi
 
-check npm    "https://nodejs.org  or  nvm: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh | bash"
-check codex  "npm install -g @openai/codex"
+check codex  "curl -fsSL https://chatgpt.com/codex/install.sh | sh"
 
 echo ""
 
