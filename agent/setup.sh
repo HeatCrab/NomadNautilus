@@ -37,6 +37,12 @@ for skill_dir in "$SCRIPT_DIR"/skills/*/; do
 done
 info "Skills installed → $SKILLS_DIR"
 
+# 3. Install helper scripts
+mkdir -p "$CLAUDE_DIR/scripts"
+cp "$SCRIPT_DIR/scripts/commit-msg-fmt.sh" "$CLAUDE_DIR/scripts/"
+chmod +x "$CLAUDE_DIR/scripts/commit-msg-fmt.sh"
+info "Helper scripts installed → $CLAUDE_DIR/scripts"
+
 # 4. Append CLAUDE.md snippet (idempotent)
 if grep -qF "$MARKER" "$CLAUDE_MD" 2>/dev/null; then
   warn "CLAUDE.md snippet already present — skipping"
