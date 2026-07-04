@@ -1,25 +1,91 @@
 # === Multi-Agent Workflow (auto-installed) ===
 
+This file is read-only for every session: never modify it unless the user explicitly asks for an update in that session.
+
+## Guiding Principles
+
+These override everything below when they conflict.
+
+1. Use Traditional Chinese (Taiwan) as the primary communication language.
+2. Do the right thing, rather than do things right — never instinctively take the simplest path or merely make the problem go away; work out what is correct first, then present the viable options for the user to decide.
+3. Do not overthink and do not presuppose intent — when something is unclear, ask the user directly what they mean.
+
+## Coding Style
+
+**Comments**: comment only to explain why the code is written this way — never to narrate what it does. A file-level comment is optional; when present, keep it brief.
+
+1. Lines at most 80 characters.
+2. Readability beats elegance — write for the next reader, not to impress.
+3. Name things with general, conventional vocabulary; do not coin uncommon terms.
+4. Software follows software thinking, hardware follows hardware thinking — e.g. never write HDL as if it were sequential software.
+5. English only in code — comments, identifiers, log strings. No Chinese in code files.
+6. No emojis, and no decorative tags or section banners (`# NOTE:`, `# TODO:`, `# === SECTION ===`) unless genuinely necessary — comments are plain prose.
+7. Docstrings explain functionality at a high level — never enumerate args / returns / raises (type hints and structure carry that), and never use colon-clause constructions; complete sentences only. In Python, wrap docstrings in `'''` with the opening and closing quotes each on their own line.
+8. Code may keep a project's internal or coined identifiers, but human-facing explanations and docs use the conventional term instead.
+9. Inside a codebase with established conventions (upstream projects, shared repos), those conventions win over the rules above.
+
 ## Git Operations
 
-Always resolve the repo root first, then use `git -C <absolute-path>` for all git commands:
+### Repo Root Resolution
+
+Always resolve the repo root first, then use `git -C <absolute-path>` for all git commands — `cd` in compound commands can trigger permission prompts and drift, while `-C` keeps every git call explicitly targeted:
 
 ```bash
 ROOT=$(git rev-parse --show-toplevel)
 git -C "$ROOT" commit -m "..."
 ```
 
-If `git rev-parse --show-toplevel` fails, the session CWD is not inside a git repo. Find the correct repo first:
+If `git rev-parse --show-toplevel` fails, the session CWD is not inside a git repo. List which subdirectories are:
 
 ```bash
-ls -d */  | xargs -I{} sh -c 'git -C {} rev-parse --show-toplevel 2>/dev/null && echo {}'
+for dir in */; do git -C "$dir" rev-parse --show-toplevel 2>/dev/null; done
 ```
 
-Never run `git add` or `git commit` until the correct repo root is confirmed.
+A root is confirmed only if it contains the files being changed in this session. Never run `git add` or `git commit` against an unconfirmed root.
+
+### Commit Messages
+
+1. **Subject**: imperative mood, at most 50 chars, no period, no backticks.
+2. **Body**: one flowing paragraph by default — multiple paragraphs only when the change genuinely carries separate concerns. American English (initialize, not initialise). Draft the body unwrapped, then pipe the full draft through `~/.claude/scripts/commit-msg-fmt.sh` — it greedy-wraps at 72 and lints against these rules; heed its warnings.
+3. **Narrative**: the body is organized around why — the problem or context forms the spine, and the what emerges from it. The how lives in the diff; assume the reader reads the message alongside the code.
+4. **Abstraction**: describe concepts and changes, not identifiers — the diff already shows the specifics. Name a function, variable, flag, or file only when that name is itself the subject of the change.
+5. **Prose discipline** (subject and body alike): plain prose only. No backticks, no bullet lists unless truly unavoidable, no colon-style elaboration ("X: explanation"), no semicolons, no em or en dashes. Parenthetical asides are a judgment call that should almost never survive a draft.
+6. **No AI attribution in any form**: no Co-Authored-By, no "Generated with" lines, no tool marks of any shape — trailer or prose. Trailers mandated by a project's convention (e.g. Signed-off-by for DCO) are allowed; they are process, not attribution.
+7. **Atomic commits**: one logical change per commit. Do not bundle unrelated changes. When the user explicitly specifies how to split or bundle, follow that instruction without re-confirming.
+8. **Approval gate**: before every commit, present the drafted message to the user and wait for explicit approval. No approval, no commit.
+9. **Commit implies push**: once approved and committed, push in the same motion (when the repo has a remote). Do not ask separately about pushing.
+
+### History
+
+The governing principle is history correctness — a linear, truthful history beats a convenient one. When a case isn't covered below, reason from this principle.
+
+1. **Rebase first**: integrate with rebase, never with merge commits. Pulling means `git pull --rebase`.
+2. **Check before building**: before working on or pushing to a repo with a remote, confirm whether a pull is needed — never let local and remote silently diverge.
+3. **Rewrites are user-initiated**: a user request to modify existing commits itself authorizes the follow-up force-push. Always `--force-with-lease`, never bare `--force`.
+4. **Collaborative repos**: stop and confirm before any force-push or rewrite touching a branch others may build on — even when it seems obviously right.
+5. **Interactive rebase is unavailable** here. Use `git commit --fixup=<SHA>` followed by `GIT_SEQUENCE_EDITOR=: git rebase --autosquash <base>`, or amend / reset-and-recommit for simple cases.
+
+## Document Writing
+
+Before writing or editing any prose document, invoke the `/report-writing` skill first. The only exceptions are Claude-self-use files — memory and CLAUDE.md-type instruction files — where structure and precision are all that matter; skip the skill and any typography rules there.
+
+## Memory Writing
+
+Rules for the auto-memory directory (`~/.claude/projects/<project>/memory/`, where `<project>` is the session cwd with every non-alphanumeric character replaced by `-`, e.g. `/Users/jim/HeatCrab` → `-Users-jim-HeatCrab`; the harness also injects the concrete path into every session). They apply across all projects; a project's CLAUDE.md defines only that project's concrete memory tree.
+
+1. **Language**: English only. Do not mix Chinese into memory files.
+2. **Purpose**: memory exists so any new session can pick up the current status without re-explanation. Update it whenever progress or status changes.
+3. **Index discipline**: `MEMORY.md` is a master index only — one line per entry. When a topic cluster grows (sessions, papers, courses), move its files into a subdirectory with its own sub-index, and link `MEMORY.md` to the sub-index; mirror the project's own directory structure when it has one.
+4. **File naming**: type prefixes (`user_`, `feedback_`, `project_`, `reference_`); daily session logs are `project_session_YYYY_MM_DD.md`.
+5. **One file per day**: a day's session log is a single file. A later session on the same day merges into it — never create part2 files.
+6. **Fidelity**: record what was actually said in the conversation, translated into English as literally as possible — no paraphrasing beyond translation, no speculation, no unstated inference. When a line is Claude's own conclusion rather than the user's words, tag it as Claude's.
+7. **Session-start catch-up**: when the user opens a session by asking to read memory, the goal is to sync on current status only. Do not start or resume any task on your own — wait for the user to assign one, or answer their status questions so both sides confirm the understanding still matches.
+8. **Weekly tidy**: a SessionStart hook injects a reminder when a project's memory has gone more than 7 days without tidying. On seeing it, tell the user up front and wait for their go-ahead. Tidying means: move stale files into `archive/`, delete archive files older than three months (by the date in the filename, else file mtime), digest and empty the Codex inbox (rule 9), update the indexes, then touch the `.last-tidy` marker in the memory directory.
+9. **Codex interop**: the memory tree has a second reader — Codex reads it via a path table in `~/.codex/AGENTS.md`, but can only write `<memory dir>/inbox/codex.md` (sandbox-enforced through `writable_roots` in `~/.codex/config.toml`). When catching up on memory, check the inbox; digest anything durable into the memory tree, then empty the file. When a new project gains a memory tree, register it in three places: the AGENTS.md path table, `writable_roots`, and `mkdir <memory dir>/inbox`.
 
 ## Code Review
 
-Before any `git commit`, run `/codex-review` on the staged changes, present the review to the user, and wait for explicit confirmation before committing. Even if the user originally requested the commit, that is not a blank approval — they may want to fix issues first.
+Before committing changes that add or modify code logic, run `/codex-review`, present the findings, and wait for explicit confirmation before committing. Skip the review — straight to the commit approval gate — for prose, documentation, pure deletions or reverts, mechanical syncs, and config tweaks. When unsure which side a diff falls on, ask alongside the message draft instead of defaulting to a review.
 
 If the user says to fix issues first — fix, re-stage, then repeat the review flow.
 
@@ -29,3 +95,7 @@ When evaluating Codex findings:
 - You are not obligated to accept all findings, but you must present them to the user.
 
 Use `/codex-review` for on-demand review outside of the commit flow (e.g. before executing a plan).
+
+## Claude Code Connectivity Troubleshooting
+
+When the user reports Claude Code / API connectivity problems ("連不上", timeouts, intermittent streaming failures), do not ask them to self-diagnose — the broken state is usually gone by the time they can ask. Check `ifconfig en0 | grep mtu` first: `mtu 1500` means the home-ISP PMTU black hole is back; the fix is 系統設定 → 網路 → Wi-Fi → 詳細資料 → 硬體 → 手動 → MTU 1400 (set 2026-04-20; a macOS upgrade may revert it).
