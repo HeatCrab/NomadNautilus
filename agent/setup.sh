@@ -43,7 +43,36 @@ cp "$SCRIPT_DIR/scripts/commit-msg-fmt.sh" "$CLAUDE_DIR/scripts/"
 chmod +x "$CLAUDE_DIR/scripts/commit-msg-fmt.sh"
 info "Helper scripts installed → $CLAUDE_DIR/scripts"
 
-# 4. Append CLAUDE.md snippet (idempotent)
+# 4. Install hooks and register them in settings.json (idempotent)
+mkdir -p "$CLAUDE_DIR/hooks"
+cp "$SCRIPT_DIR/hooks/memory-tidy-reminder.py" "$CLAUDE_DIR/hooks/"
+chmod +x "$CLAUDE_DIR/hooks/memory-tidy-reminder.py"
+python3 - "$CLAUDE_DIR/settings.json" \
+  "$CLAUDE_DIR/hooks/memory-tidy-reminder.py" <<'EOF'
+import json, os, shlex, sys
+
+path, cmd = sys.argv[1], shlex.quote(sys.argv[2])
+data = {}
+if os.path.exists(path):
+    with open(path) as f:
+        data = json.load(f)
+entries = data.setdefault("hooks", {}).setdefault("SessionStart", [])
+# Drop registrations left by older kit versions (renamed or unquoted
+# variants of the same hook) so reruns converge instead of piling up.
+# Filter at hook level so hooks grouped in the same entry survive.
+for e in entries:
+    e["hooks"] = [h for h in e.get("hooks", [])
+                  if "memory-tidy-reminder" not in h.get("command", "")]
+entries[:] = [e for e in entries if e.get("hooks")]
+entries.append(
+    {"hooks": [{"type": "command", "command": cmd, "timeout": 10}]})
+with open(path, "w") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+EOF
+info "Hooks installed and registered → $CLAUDE_DIR/hooks"
+
+# 5. Append CLAUDE.md snippet (idempotent)
 if grep -qF "$MARKER" "$CLAUDE_MD" 2>/dev/null; then
   warn "CLAUDE.md snippet already present — skipping"
 else
@@ -52,7 +81,7 @@ else
   info "CLAUDE.md rules appended → $CLAUDE_MD"
 fi
 
-# 5. Auth and API key instructions
+# 6. Auth and API key instructions
 echo ""
 echo "=== Auth Required ==="
 echo ""
