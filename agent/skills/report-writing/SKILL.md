@@ -1,6 +1,6 @@
 ---
 name: report-writing
-description: Writing rules for human-read documents. Universal tier for ANY prose document — punctuation discipline (comma/period only; 頓號 or bullets for enumerations; full-width marks in zh-TW). Full tier for reports/notes — reflective first-person process narrative, zh-TW drafting default, typography (code / italic / math), Results vs Observations layout. Invoke before writing or editing any prose document except memory and CLAUDE.md-type instruction files.
+description: Writing rules for human-read documents. Universal tier for ANY prose document — punctuation discipline (comma/period only; 頓號 or bullets for enumerations; full-width marks in zh-TW) and fact/inference separation. Full tier for reports/notes — reflective first-person process narrative, zh-TW drafting default, typography (code / italic / math), Results vs Observations layout, audience separation, max-H3 headings. Invoke before writing or editing any prose document except memory and CLAUDE.md-type instruction files.
 ---
 
 Style rules for human-read prose. Apply from the first draft so the user does not have to correct each issue manually.
@@ -12,6 +12,7 @@ Style rules for human-read prose. Apply from the first draft so the user does no
 - Punctuation: comma (，/,) and period (。/.) are the only default marks. Enumerations may use 頓號 (、, zh-TW) or a bullet list. Colons, semicolons, dashes, parentheses — only where a full-tier rule below explicitly allows them.
 - zh-TW prose uses full-width punctuation throughout.
 - Target language: when not obvious from the document itself, ask the user before drafting.
+- Grounding: separate confirmed facts from inference. Never state speculation as established truth — label inferences explicitly ("我推斷…", "this suggests…"), and make no specific mechanism claims that were not directly verified.
 
 **Full tier — reports and notes**, where process and reflection are the point. All sections below apply on top of the universal tier.
 
@@ -49,9 +50,21 @@ When the target is unclear, ask before adding or stripping figure numbering.
 - **Decision narratives are welcome, not noise.** When a non-obvious choice was made (which dataset source, why this metric, why this threshold), write the short story of arriving at it — the option first reached for, why it fell short, what was chosen instead. A paragraph tracing "tried the obvious source, hit a gating / credibility problem, found a better-grounded alternative" is exactly the reflective value the report carries over a demo. Do not compress these into a single declarative result sentence.
 - **Preserve the hand-written feel.** Intentional prose imperfections — sparing em-dashes, slightly awkward phrasings, clause-joining punctuation choices, first-person reflective asides — are voice markers, not errors. Flag a style issue at most once; never re-push after the user says "leave it."
 
+## Audience separation
+
+Reports and notes are durable artifacts a cold reader (the future author, an advisor, a grader) loads without the session context that produced them. Do not leak session-internal state into the prose:
+
+- No headline-vs-alternative framing ("the figure that is now the headline") — a cold reader sees just one figure.
+- No references to memory files or past working sessions.
+- No self-justification against past session drift, and no self-deprecating hedges carried over from internal critique.
+- No name-drops of context the document has not set up.
+
+Litmus: "does this only make sense if you sat through the session that produced it?" — if yes, cut it or move it to session memory.
+
 ## Structure
 
 - **Paragraph prose is the default.** Narrative flow, not point form.
+- **Heading depth caps at H3.** Never `####` or deeper. When a sub-topic under an H3 feels heading-worthy, fold it into prose under the parent heading, opened with a bold word or a topic sentence.
 - **Bullets only for real enumerations** — parallel items that stand alone (operator / parameter lists, baseline lists, metric lists). Process narratives ("first ..., then ..., finally ...") stay as prose.
 - **Bullets are situational, not owed to any section.** A spec section that flows naturally as prose stays prose (the Setup of a report can list model / resolution / token math entirely in sentences). Only when a spec section actually contains a clean enumeration is the **bullet sandwich** the right pattern: short prose opening (context) → bullet middle (operator / hyperparam spec) → prose closing (mechanism, rationale). Aim for roughly 0–15 % of report length in bullets total; beyond that the document becomes a slide deck.
 - **"Less than N pages" is a hard upper bound, not a target.** Aim tight and well within. Padding to hit N looks bad; undershooting by more than ~30 % looks unfinished.
