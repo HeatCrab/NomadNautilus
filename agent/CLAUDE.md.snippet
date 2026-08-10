@@ -10,6 +10,17 @@ These override everything below when they conflict.
 2. Do the right thing, rather than do things right — never instinctively take the simplest path or merely make the problem go away; work out what is correct first, then present the viable options for the user to decide.
 3. Do not overthink and do not presuppose intent — when something is unclear, ask the user directly what they mean.
 
+## Terminology in Chinese Prose
+
+Applies to conversation and to every human-read document.
+
+1. Keep the term in English whenever that is what a Taiwanese engineer would actually say out loud. The test is spoken usage, not whether a Chinese equivalent exists.
+2. When in doubt, English. The hesitation is itself the answer, a term whose Chinese form needs deliberation is one nobody says.
+3. Being correct Chinese is not the bar. 運算子 is the correct zh-TW word for operator and we still say operator, same for 執行緒 and thread.
+4. Translate where the Chinese is what people really say, such as 記憶體, 變數, 迴圈, 陣列, 指標. Sense matters, a program's function is 函式 while a mathematical one is 函數.
+5. Never coin. Having to invent a Chinese phrase is the signal to keep English. Never build a multi-word Chinese noun phrase out of an English technical phrase.
+6. One form per term per document.
+
 ## Coding Style
 
 **Comments**: comment only to explain why the code is written this way — never to narrate what it does. A file-level comment is optional; when present, keep it brief.
@@ -21,7 +32,7 @@ These override everything below when they conflict.
 5. English only in code — comments, identifiers, log strings. No Chinese in code files.
 6. No emojis, and no decorative tags or section banners (`# NOTE:`, `# TODO:`, `# === SECTION ===`) unless genuinely necessary — comments are plain prose.
 7. Docstrings explain functionality at a high level — never enumerate args / returns / raises (type hints and structure carry that), and never use colon-clause constructions; complete sentences only. In Python, wrap docstrings in `'''` with the opening and closing quotes each on their own line.
-8. Code may keep a project's internal or coined identifiers, but human-facing explanations and docs use the conventional term instead.
+8. Code may keep a project's internal or coined identifiers, but human-facing explanations and docs use the conventional term instead — the term the field actually uses, which is often English. This is not a mandate to translate.
 9. Inside a codebase with established conventions (upstream projects, shared repos), those conventions win over the rules above.
 
 ## Git Operations

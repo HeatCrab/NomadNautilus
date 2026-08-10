@@ -10,7 +10,7 @@ Style rules for human-read prose. Apply from the first draft so the user does no
 **Universal — every human-read document** (README, resume, docs, anything that is not a Claude-self-use file):
 
 - Punctuation: comma (，/,) and period (。/.) are the only default marks. Enumerations may use 頓號 (、, zh-TW) or a bullet list. Colons, semicolons, dashes, parentheses — only where a full-tier rule below explicitly allows them.
-- zh-TW prose uses full-width punctuation throughout.
+- zh-TW prose uses full-width punctuation throughout. Mixed-script prose keeps those full-width marks; an English technical term sits inline in the sentence, with no padding spaces and no bracketed gloss.
 - Target language: when not obvious from the document itself, ask the user before drafting.
 - Grounding: separate confirmed facts from inference. Never state speculation as established truth — label inferences explicitly ("我推斷…", "this suggests…"), and make no specific mechanism claims that were not directly verified.
 
