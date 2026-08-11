@@ -36,7 +36,12 @@ user's own draft (that is the user's wording, not a third-party paper).
    source, write the notes, then compare. An existing summary is the strongest
    available anchor, and reading it first yields a paraphrase of that summary
    instead of an independent reading. The comparison afterwards is itself a
-   check.
+   check. The same guard covers the notes of neighbouring papers. When a batch
+   of related papers is being noted, do not open a sibling's finished notes
+   while writing this one, and cross-compare only once the batch is done. For
+   near neighbours a sibling's notes anchor just as hard as a summary of this
+   paper, and they are the route by which an operator or a constant gets
+   misattributed.
 4. **Do not transcribe specific numbers.** Point to the paper's table / figure
    ("see Table 3") rather than copying values — transcription is where errors
    start. When a precise value is actually needed, re-open the cited page and
