@@ -28,20 +28,38 @@ user's own draft (that is the user's wording, not a third-party paper).
 2. **Record only what the paper states**, and tag each fact with a pointer —
    section number, equation number, table / figure number. Every line should be
    traceable back to a page.
-3. **Do not rely on training knowledge or memory of similar papers.** Same-topic
-   papers are easy to mix up. If a detail is not in this paper's text, it does
-   not go in the notes as fact.
+3. **Do not rely on training knowledge, on memory of similar papers, or on an
+   existing summary of this one.** Same-topic papers are easy to mix up. If a
+   detail is not in this paper's text, it does not go in the notes as fact.
+   Where a summary of the same paper already exists — project memory, a
+   colleague's digest, an earlier review — do not read it first: read the
+   source, write the notes, then compare. An existing summary is the strongest
+   available anchor, and reading it first yields a paraphrase of that summary
+   instead of an independent reading. The comparison afterwards is itself a
+   check.
 4. **Do not transcribe specific numbers.** Point to the paper's table / figure
    ("see Table 3") rather than copying values — transcription is where errors
    start. When a precise value is actually needed, re-open the cited page and
-   read it there.
+   read it there. The line runs between measured results and design constants.
+   Results — benchmark scores, speedups, ablation deltas — stay as pointers. A
+   constant that is part of what the method *is*, such as a fixed group count or
+   a stage count, can be recorded directly, because it identifies the method
+   rather than reporting an outcome.
 5. **Tag every inference.** Anything not explicitly stated in the paper — an
    interpretation, an implication, a "this is good for X" judgment — is marked
    `[Inference]` and kept visually separate from paper facts.
 6. **Write from the note-taker's (Claude's) point of view, not the user's.** The
    user may not have read the paper yet; do not absorb or echo their phrasing or
-   framing. The notes are an independent reading, so they can serve as a check
-   on the user's understanding rather than mirroring it.
+   framing. That independence is what makes the notes usable in two ways: as the
+   shared objective ground a later discussion starts from, and as the reference
+   to check against when reviewing the user's own write-up of the same paper.
+7. **Keep the file neutral.** Do not signal importance — no marking a finding as
+   significant, promising, or relevant to the reader's work. Highlighting is
+   itself an interpretation, and it frames the discussion before the discussion
+   happens; what matters surfaces from the reader's own questions. Likewise,
+   when the independent reading contradicts something the user or the project
+   record already concluded, the notes stay neutral and the divergence is raised
+   in conversation. A file that argues a position stops being a base.
 
 ## During later Q&A
 
@@ -65,4 +83,5 @@ user's own draft (that is the user's wording, not a third-party paper).
 ## See also
 
 - `report-writing` — prose / typography rules for the writeup the notes feed into
-- `gemini-research` — finding the paper / external context (separate from reading it)
+- Finding the paper or its external context is a separate activity from reading
+  it — use the built-in WebSearch for that, not these rules.
