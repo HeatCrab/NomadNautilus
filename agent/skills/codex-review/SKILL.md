@@ -18,8 +18,9 @@ Syntax below matches codex CLI >= 0.142 (breaking changes vs 0.118: `--title` no
 
 - **Sandbox:** Codex runs in a read-only sandbox by default. It can read any file in the repo on its own — do NOT pipe file contents via stdin unless necessary.
 - **Sandbox fallback:** If `codex exec` fails with a sandbox or bwrap error (e.g. `loopback: Failed RTM_NEWADDR`), retry the same command with `--dangerously-bypass-approvals-and-sandbox` added.
-- **Images/PDFs:** Use `-i <file>` to attach images or PDFs as visual context.
+- **Images/PDFs:** Use `-i <file>` to attach images or PDFs as visual context. `-i` takes a variable number of files, so a prompt written after it is swallowed as another filename and the run dies with `No prompt provided via stdin` — put the prompt first.
 - **Working directory:** Use `-C <dir>` to set the working root.
+- **Non-git roots:** `codex exec` refuses to start outside a git repo. Add `--skip-git-repo-check`.
 - **Model override:** Use `-m <model>` to pick a specific model.
 
 ## Review patterns
@@ -52,10 +53,10 @@ Note: scope flags (`--uncommitted`, `--base`, `--commit`) can NOT be combined wi
 
 ### Review arbitrary files with context (e.g., assignment spec)
 
-Let Codex read the files itself in its sandbox. Attach PDFs/images with `-i`:
+Let Codex read the files itself in its sandbox. Attach PDFs/images with `-i`, placed after the prompt:
 
 ```bash
-!codex exec -i "path/to/spec.pdf" "Read all .py files in src/ and review against the attached spec. Focus on: (1) correctness (2) design issues (3) what to change" --ephemeral
+!codex exec "Read all .py files in src/ and review against the attached spec. Focus on: (1) correctness (2) design issues (3) what to change" -i "path/to/spec.pdf" --ephemeral
 ```
 
 ### Review a plan file
