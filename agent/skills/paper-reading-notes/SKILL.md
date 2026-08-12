@@ -52,7 +52,12 @@ user's own draft (that is the user's wording, not a third-party paper).
    rather than reporting an outcome.
 5. **Tag every inference.** Anything not explicitly stated in the paper — an
    interpretation, an implication, a "this is good for X" judgment — is marked
-   `[Inference]` and kept visually separate from paper facts.
+   `[Inference]` and kept visually separate from paper facts. **An absence is an
+   inference.** What the paper contains is checkable against a page; what it
+   lacks — no ablation isolating a component, no stated cost model, no
+   definition of a term it uses — rests on the reader's search having been
+   exhaustive, and a search is never provably exhaustive. So "§N does X" is a
+   fact and "the paper never does X" is tagged, however confident the reading.
 6. **Write from the note-taker's (Claude's) point of view, not the user's.** The
    user may not have read the paper yet; do not absorb or echo their phrasing or
    framing. That independence is what makes the notes usable in two ways: as the
