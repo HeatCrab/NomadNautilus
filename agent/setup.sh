@@ -29,6 +29,12 @@ if ! command -v codex &>/dev/null; then
   echo ""
 fi
 
+if ! command -v agy &>/dev/null; then
+  warn "Missing optional CLI: agy (needed only by antigravity-review)"
+  echo "  curl -fsSL https://antigravity.google/cli/install.sh | bash"
+  echo ""
+fi
+
 # 2. Install all skills (discover every SKILL.md under skills/)
 for skill_dir in "$SCRIPT_DIR"/skills/*/; do
   skill_name=$(basename "$skill_dir")
@@ -40,7 +46,9 @@ info "Skills installed → $SKILLS_DIR"
 # 3. Install helper scripts
 mkdir -p "$CLAUDE_DIR/scripts"
 cp "$SCRIPT_DIR/scripts/commit-msg-fmt.sh" "$CLAUDE_DIR/scripts/"
-chmod +x "$CLAUDE_DIR/scripts/commit-msg-fmt.sh"
+cp "$SCRIPT_DIR/scripts/agy-review.py" "$CLAUDE_DIR/scripts/"
+chmod +x "$CLAUDE_DIR/scripts/commit-msg-fmt.sh" \
+  "$CLAUDE_DIR/scripts/agy-review.py"
 info "Helper scripts installed → $CLAUDE_DIR/scripts"
 
 # 4. Install hooks and register them in settings.json (idempotent)

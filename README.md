@@ -8,7 +8,7 @@ Portable dev kit. Clone it on any machine and feel at home.
 
 | Module | Description |
 |--------|-------------|
-| [`agent/`](agent/) | Multi-agent Claude Code workflow — Codex (review) |
+| [`agent/`](agent/) | Multi-agent Claude Code workflow — Codex and Antigravity (review) |
 
 ## Prerequisites
 
@@ -46,6 +46,14 @@ echo "sk-proj-..." | codex login --with-api-key
 ```
 
 Get a key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). Storing via `codex login` keeps the key out of your shell profile.
+
+### Antigravity CLI (optional)
+
+```bash
+curl -fsSL https://antigravity.google/cli/install.sh | bash
+```
+
+Needed only by the `antigravity-review` skill. The installer also edits your shell profile. Run `agy` once afterwards to sign in.
 
 ## Setup
 
