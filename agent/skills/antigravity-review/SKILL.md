@@ -1,14 +1,15 @@
 ---
 name: antigravity-review
-description: Trigger an on-demand design review by Antigravity (Gemini) through the agy CLI. Use only when the user asks for an Antigravity, agy or Gemini review, or for a second opinion besides Codex. It does not replace /codex-review in the commit flow.
+description: Trigger a design review by Antigravity (Gemini) through the agy CLI. Use when the user asks for an Antigravity, agy or Gemini review or a second opinion besides Codex, and on hard commits as the Code Review rules in CLAUDE.md define them. It never replaces /codex-review.
 ---
 
-Run an on-demand Antigravity review. Tested with agy 1.5.14.
+Run an Antigravity review. Tested with agy 1.5.14.
 
 ## When to use
 
 - The user asks for it, by name or through `/antigravity-review`.
-- Never as an automatic step. The pre-commit review stays `/codex-review`.
+- A commit that needs `/codex-review` and is also hard, as the Code Review section of CLAUDE.md defines it. Run it in addition to Codex, and leave Codex's findings out of the prompt so the two stay independent.
+- Not otherwise. When unsure whether a commit is hard, do not run it.
 
 ## How to run
 

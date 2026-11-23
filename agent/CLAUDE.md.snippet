@@ -100,6 +100,8 @@ Before committing changes that add or modify code logic, run `/codex-review`, pr
 
 If the user says to fix issues first — fix, re-stage, then repeat the review flow.
 
+When a commit that needs `/codex-review` is also hard, additionally run `/antigravity-review`, without showing it Codex's findings, and present both together. Hard means any of: the change is hard to reverse (public interface, data format, deleting or moving data, permissions); Claude disagrees with an important Codex finding or cannot verify it; a second Codex round still brings important new findings. When unsure, do not run it. Outside the commit flow, run it only when the user asks.
+
 When evaluating Codex findings:
 - Prioritize design-level feedback over syntax/style.
 - "Do the right thing, rather than do things right."
