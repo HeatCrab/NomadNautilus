@@ -156,4 +156,4 @@ When sending a report draft to codex review:
 
 ## See also
 
-- `codex-review` — design review for code (separate from report review)
+- `co-review` — two-stage cross-vendor design review for code (separate from report review)

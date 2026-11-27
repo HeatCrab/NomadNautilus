@@ -17,14 +17,16 @@ import subprocess
 import sys
 
 RULES = (
-    'Review only. Do not modify any file and do not run shell commands. '
+    'Review only. Do not modify any file, do not run shell commands, and do '
+    'not invoke sub-reviews, swarm, or other agents. '
     'Use your file reading tool if you need context from this directory. '
     'Give design-level feedback, not lint or style, most serious first.'
 )
 # The prompt travels as one argument. Linux caps a single argument at 128 KiB,
 # macOS caps the whole command line at about one megabyte.
 MAX_PROMPT = 120_000 if sys.platform.startswith('linux') else 800_000
-DEFAULT_MODEL = 'gemini-4-hydrogen-high'
+DEFAULT_MODEL = 'gemini-4-neon-high'
+DEFAULT_TIMEOUT = '20m'
 
 
 def git(root, *args):
@@ -102,8 +104,9 @@ def main():
     parser = argparse.ArgumentParser(description='Antigravity review')
     parser.add_argument('prompt')
     parser.add_argument('-C', dest='root', default='.')
-    parser.add_argument('-m', '--model', default=DEFAULT_MODEL)
-    parser.add_argument('--timeout', default='9m')
+    parser.add_argument('-m', '--model', default=None)
+    parser.add_argument('--timeout', default=DEFAULT_TIMEOUT)
+    parser.add_argument('-r', '--resume', dest='resume')
     scope = parser.add_mutually_exclusive_group()
     scope.add_argument('--diff', action='store_true')
     scope.add_argument('--base')
@@ -120,8 +123,13 @@ def main():
     command = [
         'agy', '-p', build_prompt(root, opts), '--mode', 'plan',
         '--sandbox', '--output-format', 'json',
-        '--print-timeout', opts.timeout, '--model', opts.model,
+        '--print-timeout', opts.timeout,
     ]
+    model = opts.model or (None if opts.resume else DEFAULT_MODEL)
+    if model:
+        command.extend(['--model', model])
+    if opts.resume:
+        command.extend(['--conversation', opts.resume])
 
     before = snapshot(root)
     run = subprocess.run(command, cwd=root, stdin=subprocess.DEVNULL,
@@ -132,6 +140,12 @@ def main():
         result = json.loads(run.stdout)
     except ValueError:
         result = {}
+    conv_id = (result.get('conversation_id') or '').strip()
+    if conv_id:
+        print(f'conversation_id: {conv_id}', file=sys.stderr)
+    elif result.get('status') == 'SUCCESS':
+        print('WARNING conversation_id missing from agy output; '
+              '--resume unavailable.', file=sys.stderr)
     response = (result.get('response') or '').strip()
     if response:
         print(response)

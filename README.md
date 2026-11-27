@@ -8,7 +8,7 @@ Portable dev kit. Clone it on any machine and feel at home.
 
 | Module | Description |
 |--------|-------------|
-| [`agent/`](agent/) | Multi-agent Claude Code workflow — Codex and Antigravity (review) |
+| [`agent/`](agent/) | Multi-agent workflow — Claude Code, Codex, and Antigravity (`co-review`) |
 
 ## Prerequisites
 
@@ -53,7 +53,7 @@ Get a key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys
 curl -fsSL https://antigravity.google/cli/install.sh | bash
 ```
 
-Needed only by the `antigravity-review` skill. The installer also edits your shell profile. Run `agy` once afterwards to sign in.
+Needed by the `co-review` skill when Claude Code or Codex calls Antigravity (Gemini or Claude Opus). The installer also edits your shell profile. Run `agy` once afterwards to sign in.
 
 ## Setup
 

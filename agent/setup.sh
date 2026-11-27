@@ -3,9 +3,14 @@ set -euo pipefail
 
 CLAUDE_DIR="$HOME/.claude"
 SKILLS_DIR="$CLAUDE_DIR/skills"
+GEMINI_CONFIG_DIR="$HOME/.gemini/config"
+GEMINI_SKILLS_DIR="$GEMINI_CONFIG_DIR/skills"
+CODEX_DIR="$HOME/.codex"
+CODEX_SKILLS_DIR="$CODEX_DIR/skills"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MARKER="# === Multi-Agent Workflow (auto-installed) ==="
+RETIRED_SKILLS=(codex-review antigravity-review)
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -30,18 +35,47 @@ if ! command -v codex &>/dev/null; then
 fi
 
 if ! command -v agy &>/dev/null; then
-  warn "Missing optional CLI: agy (needed only by antigravity-review)"
+  warn "Missing optional CLI: agy (needed by co-review for Antigravity)"
   echo "  curl -fsSL https://antigravity.google/cli/install.sh | bash"
   echo ""
 fi
 
 # 2. Install all skills (discover every SKILL.md under skills/)
-for skill_dir in "$SCRIPT_DIR"/skills/*/; do
-  skill_name=$(basename "$skill_dir")
-  mkdir -p "$SKILLS_DIR/$skill_name"
-  cp "$skill_dir/SKILL.md" "$SKILLS_DIR/$skill_name/SKILL.md"
-done
-info "Skills installed → $SKILLS_DIR"
+install_skills() {
+  local dest="$1"
+  local prune_retired="${2:-0}"
+  local rules="${3:-}"
+  if [ "$prune_retired" -eq 1 ]; then
+    local keep_retired=0
+    if [ -f "$rules" ] && grep -qE '(codex|antigravity)-review' "$rules"; then
+      keep_retired=1
+    fi
+    for old in "${RETIRED_SKILLS[@]}"; do
+      if [ -d "$dest/$old" ]; then
+        if [ "$keep_retired" -eq 1 ]; then
+          warn "Keeping $dest/$old ($rules still references it; migrate to /co-review)"
+        else
+          rm -rf "$dest/$old"
+        fi
+      fi
+    done
+  fi
+  for skill_dir in "$SCRIPT_DIR"/skills/*/; do
+    [ -f "$skill_dir/SKILL.md" ] || continue
+    skill_name=$(basename "$skill_dir")
+    mkdir -p "$dest/$skill_name"
+    cp "$skill_dir/SKILL.md" "$dest/$skill_name/SKILL.md"
+  done
+  info "Skills installed → $dest"
+}
+
+install_skills "$SKILLS_DIR" 1 "$CLAUDE_MD"
+if [ -d "$HOME/.gemini" ] || command -v agy &>/dev/null; then
+  install_skills "$GEMINI_SKILLS_DIR" 0
+fi
+if [ -d "$CODEX_DIR" ] || command -v codex &>/dev/null; then
+  install_skills "$CODEX_SKILLS_DIR" 0
+fi
 
 # 3. Install helper scripts
 mkdir -p "$CLAUDE_DIR/scripts"
@@ -81,8 +115,12 @@ EOF
 info "Hooks installed and registered → $CLAUDE_DIR/hooks"
 
 # 5. Append CLAUDE.md snippet (idempotent)
-if grep -qF "$MARKER" "$CLAUDE_MD" 2>/dev/null; then
-  warn "CLAUDE.md snippet already present — skipping"
+if grep -qF "$MARKER" "$CLAUDE_MD" 2>/dev/null \
+  || grep -qE '^## Code Review$' "$CLAUDE_MD" 2>/dev/null; then
+  warn "CLAUDE.md workflow rules already present — skipping"
+  if grep -qE '(codex|antigravity)-review' "$CLAUDE_MD" 2>/dev/null; then
+    warn "Update Code Review in $CLAUDE_MD from $SCRIPT_DIR/CLAUDE.md.snippet, then re-run setup.sh to prune retired skills"
+  fi
 else
   printf '\n' >> "$CLAUDE_MD"
   cat "$SCRIPT_DIR/CLAUDE.md.snippet" >> "$CLAUDE_MD"

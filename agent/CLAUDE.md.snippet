@@ -96,18 +96,18 @@ Rules for the auto-memory directory (`~/.claude/projects/<project>/memory/`, whe
 
 ## Code Review
 
-Before committing changes that add or modify code logic, run `/codex-review`, present the findings, and wait for explicit confirmation before committing. Skip the review — straight to the commit approval gate — for prose, documentation, pure deletions or reverts, mechanical syncs, and config tweaks. When unsure which side a diff falls on, ask alongside the message draft instead of defaulting to a review.
+Before committing changes that add or modify code logic, or before running formal tests or acceptance suites, run `/co-review`, present the findings, and wait for explicit confirmation before committing. Skip the review — straight to the commit approval gate — for prose, documentation, pure deletions or reverts, mechanical syncs, and config tweaks. When unsure which side a diff falls on, ask alongside the message draft instead of defaulting to a review.
 
-If the user says to fix issues first — fix, re-stage, then repeat the review flow.
+`/co-review` runs a two-stage sequential cross-vendor gate rather than running two reviewers in parallel:
+- **Stage 1 (primary reviewer)**: iterate with the primary reviewer (Codex for Claude or Gemini leads; Antigravity Gemini for OpenAI/GPT leads) until it approves.
+- **Stage 2 (final reviewer)**: right before committing or launching formal tests, independently run the remaining third model family without sharing Stage 1 findings. If Stage 2 raises issues, fix the root cause, re-confirm with Stage 1 (resumed), then re-confirm with Stage 2 (resumed).
 
-Every commit that needs `/codex-review` also gets `/antigravity-review`. Run the two independently, without showing either the other's findings, and present both together. Also run `/antigravity-review` on hard work outside the commit flow. Hard means any of: the step is hard to reverse (public interface, data format, deleting or moving data, permissions), in which case run it before acting; Claude disagrees with an important Codex finding or cannot verify it; the same problem is still unsolved after two attempts. When unsure whether work is hard, do not run it.
+When evaluating findings:
+- Identify the shared root cause before patching, and check with the user after 5 rounds without convergence.
+- Prioritize design-level feedback over syntax/style ("do the right thing, rather than do things right").
+- All reviewer output is advisory, but you must present findings to the user.
 
-When evaluating Codex findings:
-- Prioritize design-level feedback over syntax/style.
-- "Do the right thing, rather than do things right."
-- You are not obligated to accept all findings, but you must present them to the user.
-
-Use `/codex-review` for on-demand review outside of the commit flow (e.g. before executing a plan).
+Use `/co-review` on demand outside the commit flow as well (for example before executing a plan or an irreversible step).
 
 ## Claude Code Connectivity Troubleshooting
 
